@@ -40,7 +40,7 @@ void calculateTurnAroundTime(int number, int burst_time[], int wait_time[], int 
 }
 
 void calculateWaitTimeFcfs(int number, int arrival_time[], int burst_time[], int wait_time[], int start_time[]) {
-	start_time[0] = 0;
+	start_time[0] = 0 + arrival_time[0];
 	wait_time[0] = 0;
 	
 	int i;
@@ -54,8 +54,24 @@ void calculateWaitTimeFcfs(int number, int arrival_time[], int burst_time[], int
 	}
 }
 
+void swap(int i, int j, int processes[], int burst_time[], int priority[], int arrival_time[]) {
+	processes[j]=processes[j]+processes[i]-(processes[i]=processes[j]);
+	priority[j]=priority[j]+priority[i]-(priority[i]=priority[j]);
+	burst_time[j]=burst_time[j]+burst_time[i]-(burst_time[i]=burst_time[j]);
+	arrival_time[j]=arrival_time[j]+arrival_time[i]-(arrival_time[i]=arrival_time[j]);
+}
+
 void fcfs(int number, int processes[], int burst_time[], int priority[], int arrival_time[]) {
 	int start_time[number], wait_time[number], turn_around_time[number];
+	
+	int i, j;
+	for (i = 0; i < number - 1; i++) {
+		for( j = i+ 1; j < number; j++) {
+			if (arrival_time[j] < arrival_time[i]) {
+				swap(i, j, processes, burst_time, priority, arrival_time);
+			}
+		}
+	}
 	
 	calculateWaitTimeFcfs(number, arrival_time, burst_time, wait_time, start_time);
 	calculateTurnAroundTime(number, burst_time, wait_time, turn_around_time);
