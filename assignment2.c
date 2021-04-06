@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<conio.h>
+#include<stdbool.h>
 
 void displayProcessTable(int number, int processes[], int arrival_time[], int burst_time[], int priority[], int wait_time[], int turn_around_time[]) {
 	printf("Processes\tBurst Time\tArrival Time\tPriority\tWaiting Time\tTurn-Around Time\n");
@@ -64,7 +65,6 @@ void fcfs(int number, int processes[], int burst_time[], int priority[], int arr
 	displayAvgTime(number, wait_time, turn_around_time);
 }
 
-
 void createProcessTable(int number, int processes[], int burst_time[], int priority[], int arrival_time[]) {
 	int i;
 	for(i = 0; i < number; i++) {
@@ -84,8 +84,33 @@ int main() {
 	int processes[number], burst_time[number], priority[number], arrival_time[number];
 	createProcessTable(number, processes, burst_time, priority, arrival_time);
 	
-	fcfs(number, processes, burst_time, priority, arrival_time);
+	
+	do {
+		int i, temp_processes[number], temp_burst_time[number], temp_priority[number], temp_arrival_time[number];
+		for (i = 0; i < number; i++) {
+			temp_processes[i] = processes[i];
+			temp_burst_time[i] = burst_time[i];
+			temp_priority[i] = priority[i];
+			temp_arrival_time[i] = arrival_time[i];
+		}
+		
+		printf("\n1. FCFS Scheduling \n2. SJF Scheduling \n3. RR Scheduling \n4. Priority Scheduling \n5. Exit");
+		printf("\nEnter your choice: ");
+		scanf("%d",&choice);
+		
+		switch(choice) {
+			case 1: fcfs(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
+					break;
+			/*case 2: sjf(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
+					break;
+			case 3: rr(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
+					break;
+			case 4: ps(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
+					break; */
+			case 5: return 0;
+			default: printf("\nPlease enter correct option !!!");
+		}
+	} while (choice != 5);
 	
 	return 0;
 }
-
