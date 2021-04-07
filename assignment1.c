@@ -75,8 +75,8 @@ void sjf(int number, int processes[], int burst_time[], int priority[]) {
 	int i, j;
 	for (i = 0; i < number - 1; i++) {
 		for( j = i+ 1; j < number; j++) {
-			if (burst_time[j] < burst_time[i]) {
-				swap(i, j, processes, burst_time, priority);
+			if ((burst_time[j] < burst_time[i]) || (burst_time[j] == burst_time[i] && processes[j] < processes[i])) {
+				swap(i,j, processes, burst_time, priority, arrival_time);
 			}
 		}
 	}
@@ -132,8 +132,8 @@ void ps(int number, int processes[], int burst_time[], int priority[]) {
 	int i, j;
 	for (i = 0; i < number - 1; i++) {
 		for( j = i+ 1; j < number; j++) {
-			if (priority[j] < priority[i]) {
-				swap(i, j, processes, burst_time, priority);
+			if ((priority[j] > priority[i]) || (priority[j] == priority[i] && processes[j] < processes[i])) {
+				swap(i,j, processes, burst_time, priority, arrival_time);
 			}
 		}
 	}

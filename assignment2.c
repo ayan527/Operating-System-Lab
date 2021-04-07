@@ -47,6 +47,32 @@ void calculateTurnAroundTime(int number, int burst_time[], int wait_time[], int 
 	}
 }
 
+void calculateWaitTimePs(int number, int processes[], int arrival_time[], int burst_time[], int wait_time[], int start_time[], int priority[]) {
+	int completion_time[number];
+	
+	start_time[0] = 0 + arrival_time[0];
+	completion_time[0] = start_time[0] + burst_time[0];
+	wait_time[0] = 0;
+	
+	int i;
+	for (i = 1; i < number; i++) {
+		int j;
+		for(j = i+1; j < number && arrival_time[j] <= completion_time[i-1]; j++) {
+			if ((priority[j] < priority[i]) || (priority[j] == priority[i] && (arrival_time[j] < arrival_time[i] || (arrival_time[j] == arrival_time[i] && processes[j] < processes[i])))) {
+				swap(i,j, processes, burst_time, priority, arrival_time);
+			}
+		}
+		start_time[i] = completion_time[i-1];
+		wait_time[i] = start_time[i] - arrival_time[i];
+		if(wait_time[i] < 0) {
+			start_time[i] += -(wait_time[i]);
+			wait_time[i] = 0;
+		}
+		completion_time[i] = start_time[i] + burst_time[i];
+	}
+	
+}
+
 void calculateWaitTimeSjf(int number, int processes[], int arrival_time[], int burst_time[], int wait_time[], int start_time[], int priority[]) {
 	int completion_time[number];
 	
@@ -58,11 +84,11 @@ void calculateWaitTimeSjf(int number, int processes[], int arrival_time[], int b
 	for (i = 1; i < number; i++) {
 		int j;
 		for(j = i+1; j < number && arrival_time[j] <= completion_time[i-1]; j++) {
-			if (burst_time[j] < burst_time[j-1]) {
-				swap(j,j-1, processes, burst_time, priority, arrival_time);
+			if ((burst_time[j] < burst_time[i]) || (burst_time[j] == burst_time[i] && (arrival_time[j] < arrival_time[i] || (arrival_time[j] == arrival_time[i] && processes[j] < processes[i])))) {
+				swap(i,j, processes, burst_time, priority, arrival_time);
 			}
 		}
-		start_time[i] = start_time[i-1] + burst_time[i-1];
+		start_time[i] = completion_time[i-1];;
 		wait_time[i] = start_time[i] - arrival_time[i];
 		if(wait_time[i] < 0) {
 			start_time[i] += -(wait_time[i]);
@@ -101,6 +127,25 @@ void sjf(int number, int processes[], int burst_time[], int priority[], int arri
 	}
 	
 	calculateWaitTimeSjf(number, processes, arrival_time, burst_time, wait_time, start_time, priority);
+	calculateTurnAroundTime(number, burst_time, wait_time, turn_around_time);
+	
+	displayProcessTable(number, processes, arrival_time, burst_time, priority, wait_time, turn_around_time);
+	displayAvgTime(number, wait_time, turn_around_time);
+}
+
+void ps(int number, int processes[], int burst_time[], int priority[], int arrival_time[]) {
+	int start_time[number], wait_time[number], turn_around_time[number];
+	
+	int i, j;
+	for (i = 0; i < number - 1; i++) {
+		for( j = i+ 1; j < number; j++) {
+			if ((arrival_time[j] < arrival_time[i]) || (arrival_time[j] == arrival_time[i] && priority[j] < priority[i])) {
+				swap(i, j, processes, burst_time, priority, arrival_time);
+			}
+		}
+	}
+	
+	calculateWaitTimePs(number, processes, arrival_time, burst_time, wait_time, start_time, priority);
 	calculateTurnAroundTime(number, burst_time, wait_time, turn_around_time);
 	
 	displayProcessTable(number, processes, arrival_time, burst_time, priority, wait_time, turn_around_time);
@@ -165,9 +210,9 @@ int main() {
 			case 2: sjf(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
 					break;
 			/*case 3: rr(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
-					break;
-			case 4: ps(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
 					break; */
+			case 4: ps(number, temp_processes, temp_burst_time, temp_priority, temp_arrival_time);
+					break;
 			case 5: return 0;
 			default: printf("\nPlease enter correct option !!!");
 		}
