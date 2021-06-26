@@ -23,7 +23,7 @@ void* writerFunc(void* arg) {
 	do {
 		pthread_mutex_lock(&lock);
 		printf("\nWriter Thread %d is writing now...", pthread_self());
-		sleep(1);
+		// sleep(1);
 		pthread_mutex_unlock(&lock);
 	} while(1);
 }

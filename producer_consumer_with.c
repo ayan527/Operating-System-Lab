@@ -40,6 +40,7 @@ void* consumer(void* arg) {
 		
 		itemCons = buffer_array[out];
 		printf("\nConsuming an item: %d", itemCons);
+		sleep(1);
 		out = (out + 1) % BUFFER_SIZE;
 		
 		sem_post(&binary_sem);

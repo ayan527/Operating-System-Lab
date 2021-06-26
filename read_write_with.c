@@ -39,7 +39,7 @@ void* writerFunc(void* arg) {
 		sem_wait(&database_sem);
 		checkingDigit += 1;
 		printf("\nWriter Thread %d is writing now... Checking Digit updated: %d", pthread_self(), checkingDigit);
-		sleep(1);
+		// sleep(1);
 		sem_post(&database_sem);
 	} while(1);
 }
